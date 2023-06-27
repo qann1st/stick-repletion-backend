@@ -16,7 +16,7 @@ export class AuthService {
 
   async signUp(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
     const userExists = await this.userService.getUserByEmail(
-      createUserDto.username,
+      createUserDto.email,
     );
     if (userExists) {
       throw new BadRequestException('Пользователь уже зарегистрирован');
