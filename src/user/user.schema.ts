@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
+import { Document } from 'mongoose';
+
+export type UserDocument = User & Document;
 
 @Schema({
   toJSON: {
