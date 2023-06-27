@@ -1,7 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Auth, AuthDocument } from './auth.schema';
-import { Model } from 'mongoose';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -12,7 +9,6 @@ import { SignInDto } from './dto/signIn.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(Auth.name) private authModel: Model<AuthDocument>,
     private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
