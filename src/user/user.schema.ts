@@ -16,6 +16,12 @@ export class User {
   __v: number;
   @Prop({ required: true, minlength: 2, maxlength: 32 })
   username: string;
+  @Prop({
+    required: true,
+    default:
+      'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png',
+  })
+  avatar: string;
   @Prop({ required: true, unique: true })
   email: string;
   @Prop({ required: true })
