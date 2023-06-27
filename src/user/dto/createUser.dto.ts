@@ -1,7 +1,7 @@
-import { IsAlpha, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsAlphanumeric, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
-  @IsAlpha()
+  @IsAlphanumeric()
   username: string;
   @IsEmail()
   email: string;
