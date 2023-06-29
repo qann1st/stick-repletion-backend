@@ -26,7 +26,13 @@ export class Question {
   @Prop({ required: true, minlength: 20 })
   attemptsFix: string;
   @Prop({ required: true })
+  rating: User[];
+  @Prop({ required: true })
   tags: string[];
+  @Prop({ default: Date.now() })
+  createTimestamp: Date;
+  @Prop()
+  updateTimestamp: Date;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);
