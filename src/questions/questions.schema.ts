@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 import { User } from 'src/user/user.schema';
 
 export type QuestionDocument = Question & Document;
