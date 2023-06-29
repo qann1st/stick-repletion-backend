@@ -30,7 +30,7 @@ export class User {
   @Prop({ default: Date.now() })
   createdAccount: Date;
   @Prop()
-  question: Question[];
+  questions: Question[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
