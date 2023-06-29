@@ -1,7 +1,7 @@
-import { IsAlphanumeric, IsArray, IsString } from 'class-validator';
+import { IsArray, IsString } from 'class-validator';
 
 export class CreateQuestionDto {
-  @IsAlphanumeric()
+  @IsString()
   title: string;
   @IsString()
   problem: string;
