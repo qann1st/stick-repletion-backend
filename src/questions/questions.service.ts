@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question, QuestionDocument } from './questions.schema';
 import { Model, RefType } from 'mongoose';
 import { CreateQuestionDto } from './dto/createQuestion.dto';
-import { CurrentUser } from 'src/auth/decorators/currentUser.decorator';
 import { User, UserDocument } from 'src/user/user.schema';
 import { UpdateQuestionDto } from './dto/updateQuestion.dto';
 
@@ -23,45 +22,60 @@ export class QuestionsService {
   }
 
   async createQuestion(
-    @CurrentUser() user: User,
+    user: User,
     createQuestionDto: CreateQuestionDto,
   ): Promise<QuestionDocument> {
     const question = await this.questionModel.create({
       ...createQuestionDto,
       owner: user,
     });
+    console.log(question);
     await this.userModel.findByIdAndUpdate(user._id, {
       $addToSet: { questions: question },
     });
     return question;
   }
 
-  async upRating(
-    @CurrentUser() user: User,
-    id: RefType,
-  ): Promise<QuestionDocument> {
+  async upRating(user: User, id: RefType): Promise<QuestionDocument> {
     return await this.questionModel.findByIdAndUpdate(id, {
       $addToSet: { rating: user },
+      new: true,
     });
   }
 
-  async downRating(
-    @CurrentUser() user: User,
-    id: RefType,
-  ): Promise<QuestionDocument> {
+  async downRating(user: User, id: RefType): Promise<QuestionDocument> {
     return await this.questionModel.findByIdAndUpdate(id, {
       $pull: { rating: user },
+      new: true,
     });
   }
 
   async updateQuestion(
     id: RefType,
     updateQuestionDto: UpdateQuestionDto,
+    user: User,
   ): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndUpdate(id, updateQuestionDto);
+    const question = await this.questionModel.findByIdAndUpdate(
+      id,
+      updateQuestionDto,
+    );
+    if (question && question._id === user._id) {
+      return question.updateOne(updateQuestionDto, { new: true });
+    } else {
+      throw new ForbiddenException('Вы не являетесь владельцем вопроса');
+    }
   }
 
-  async removeQuestion(id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndDelete(id);
+  async removeQuestion(user: User, id: RefType): Promise<QuestionDocument> {
+    const question = await this.questionModel.findById(id);
+    if (question.owner._id === user._id) {
+      await this.userModel.findByIdAndUpdate(user._id, {
+        $pull: { questions: question },
+      });
+
+      return question.deleteOne();
+    } else {
+      throw new ForbiddenException('Вы не являетесь владельцем вопроса');
+    }
   }
 }
