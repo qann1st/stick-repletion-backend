@@ -1,10 +1,12 @@
-import { IsAlphanumeric, IsEmail, IsNotEmpty } from 'class-validator';
+import { IsAlphanumeric, IsArray, IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateQuestionDto {
   @IsAlphanumeric()
-  username: string;
-  @IsEmail()
-  email: string;
-  @IsNotEmpty()
-  password: string;
+  title: string;
+  @IsString()
+  problem: string;
+  @IsString()
+  attemptsFix: string;
+  @IsArray()
+  tags: string[];
 }
