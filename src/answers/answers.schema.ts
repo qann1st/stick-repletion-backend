@@ -23,7 +23,7 @@ export class Answer {
   owner: QuestionUser;
   @Prop({ required: true, minlength: 20 })
   answer: string;
-  @Prop({ required: true })
+  @Prop({ default: [] })
   rating: User[];
   @Prop({ default: Date.now() })
   createTimestamp: Date;
