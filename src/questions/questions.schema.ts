@@ -31,7 +31,7 @@ export class Question {
   problem: string;
   @Prop({ required: true, minlength: 20 })
   attemptsFix: string;
-  @Prop({ required: true })
+  @Prop({ default: [] })
   rating: User[];
   @Prop({ required: true })
   tags: string[];
