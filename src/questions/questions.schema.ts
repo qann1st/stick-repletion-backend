@@ -2,6 +2,7 @@ import { PartialType } from '@nestjs/mapped-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
+import { Answer } from 'src/answers/answers.schema';
 import { User } from 'src/user/user.schema';
 
 export type QuestionDocument = Question & Document;
@@ -34,6 +35,8 @@ export class Question {
   rating: User[];
   @Prop({ required: true })
   tags: string[];
+  @Prop()
+  answers: Answer[];
   @Prop({ default: Date.now() })
   createTimestamp: Date;
   @Prop()
