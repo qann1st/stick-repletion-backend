@@ -34,12 +34,12 @@ export class AnswersController {
     return this.answerService.createAnswer(user, createAnswerDto);
   }
 
-  @Put('/rating')
+  @Put('/rating/:id')
   upRating(@CurrentUser() user: User, @Param('id') id: RefType) {
     return this.answerService.upRating(user, id);
   }
 
-  @Delete('/rating')
+  @Delete('/rating/:id')
   downRating(@CurrentUser() user: User, @Param('id') id: RefType) {
     return this.answerService.downRating(user, id);
   }
