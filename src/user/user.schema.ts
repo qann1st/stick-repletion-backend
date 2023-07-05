@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
+import { Answer } from 'src/answers/answers.schema';
 import { Question } from 'src/questions/questions.schema';
 
 export type UserDocument = User & Document;
@@ -31,6 +32,8 @@ export class User {
   createdAccount: Date;
   @Prop()
   questions: Question[];
+  @Prop()
+  answers: Answer[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
