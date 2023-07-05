@@ -45,12 +45,12 @@ export class QuestionsController {
     return this.questionsService.createQuestion(user, createQuestionDto);
   }
 
-  @Put('/rating')
+  @Put('/rating/:id')
   upRating(@CurrentUser() user: User, @Param('id') id: RefType) {
     return this.questionsService.upRating(user, id);
   }
 
-  @Delete('/rating')
+  @Delete('/rating/:id')
   downRating(@CurrentUser() user: User, @Param('id') id: RefType) {
     return this.questionsService.downRating(user, id);
   }
