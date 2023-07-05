@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 import { User } from 'src/user/user.schema';
 
 export type QuestionDocument = Question & Document;
-type QuestionUser = Pick<
+export type QuestionUser = Pick<
   User,
   '_id' | 'avatar' | 'createdAccount' | 'email' | 'questions' | 'username'
 >;
