@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question, QuestionDocument } from './questions.schema';
 import { Model, RefType } from 'mongoose';
@@ -59,7 +63,12 @@ export class QuestionsService {
       id,
       updateQuestionDto,
     );
-    if (question && question._id === user._id) {
+
+    if (!question) {
+      throw new NotFoundException('Такого вопроса не существует');
+    }
+
+    if (user._id.toString() === question.owner[0]._id.toString()) {
       return question.updateOne(updateQuestionDto, { new: true });
     } else {
       throw new ForbiddenException('Вы не являетесь владельцем вопроса');
@@ -68,7 +77,12 @@ export class QuestionsService {
 
   async removeQuestion(user: User, id: RefType): Promise<QuestionDocument> {
     const question = await this.questionModel.findById(id);
-    if (question.owner._id === user._id) {
+
+    if (!question) {
+      throw new NotFoundException('Такого вопроса не существует');
+    }
+
+    if (user._id.toString() === question.owner[0]._id.toString()) {
       await this.userModel.findByIdAndUpdate(user._id, {
         $pull: { questions: question },
       });
