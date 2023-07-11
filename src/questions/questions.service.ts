@@ -17,8 +17,15 @@ export class QuestionsService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async getAllQuestions(): Promise<QuestionDocument[]> {
-    return await this.questionModel.find({});
+  async getQuestions(
+    page: number,
+    limit: number,
+  ): Promise<{ questions: QuestionDocument[]; pages: number }> {
+    const questions = await this.questionModel.find({});
+    return {
+      questions: questions.reverse().slice((page - 1) * limit, page * limit),
+      pages: Math.ceil(questions.length / limit),
+    };
   }
 
   async getQuestionById(id: RefType): Promise<QuestionDocument> {
