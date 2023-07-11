@@ -23,7 +23,7 @@ export class QuestionsService {
   ): Promise<{ questions: QuestionDocument[]; pages: number }> {
     const questions = await this.questionModel.find({});
     return {
-      questions: questions.reverse().slice((page - 1) * limit, page * limit),
+      questions: questions.slice((page - 1) * limit),
       pages: Math.ceil(questions.length / limit),
     };
   }
@@ -40,7 +40,6 @@ export class QuestionsService {
       ...createQuestionDto,
       owner: user,
     });
-    console.log(question);
     await this.userModel.findByIdAndUpdate(user._id, {
       $addToSet: { questions: question },
     });
