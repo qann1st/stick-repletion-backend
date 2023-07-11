@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -28,8 +29,8 @@ export class QuestionsController {
   ) {}
 
   @Get()
-  getAllQuestions() {
-    return this.questionsService.getAllQuestions();
+  getAllQuestions(@Body() { page, limit }) {
+    return this.questionsService.getQuestions(page, limit);
   }
 
   @Get(':id')

@@ -40,6 +40,7 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.userService.getUserByEmail(signInDto.email);
     if (!user) throw new BadRequestException('Неверная почта или пароль');
+
     const passwordMatches = await bcrypt.compare(
       signInDto.password,
       user.password,
