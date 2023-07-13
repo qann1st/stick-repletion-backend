@@ -47,7 +47,7 @@ export class QuestionsService {
     return {
       questions: questions.slice((page - 1) * limit).reverse(),
       users: users.slice((page - 1) * limit).reverse(),
-      pages: Math.ceil(questions.length / limit),
+      pages: Math.ceil((questions.length + users.length) / limit),
     };
   }
 
