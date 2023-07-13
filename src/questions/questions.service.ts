@@ -23,7 +23,30 @@ export class QuestionsService {
   ): Promise<{ questions: QuestionDocument[]; pages: number }> {
     const questions = await this.questionModel.find({});
     return {
-      questions: questions.slice((page - 1) * limit),
+      questions: questions.slice((page - 1) * limit).reverse(),
+      pages: Math.ceil(questions.length / limit),
+    };
+  }
+
+  async getSearch(
+    page: number,
+    limit: number,
+    search: string,
+  ): Promise<{
+    questions: QuestionDocument[];
+    users: UserDocument[];
+    pages: number;
+  }> {
+    const questions = await this.questionModel.find({
+      title: { $regex: `^${search}` },
+    });
+    const users = await this.userModel.find({
+      username: { $regex: `.*${search}.*` },
+    });
+
+    return {
+      questions: questions.slice((page - 1) * limit).reverse(),
+      users: users.slice((page - 1) * limit).reverse(),
       pages: Math.ceil(questions.length / limit),
     };
   }

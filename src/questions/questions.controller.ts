@@ -32,6 +32,11 @@ export class QuestionsController {
     return this.questionsService.getQuestions(page, limit);
   }
 
+  @Get('/search')
+  getSearch(@Query() { page, limit, search }) {
+    return this.questionsService.getSearch(page, limit, search);
+  }
+
   @Get(':id')
   getQuestionById(@Param('id') id: RefType) {
     return this.questionsService.getQuestionById(id);
