@@ -70,17 +70,23 @@ export class QuestionsService {
   }
 
   async upRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndUpdate(id, {
-      $addToSet: { rating: user },
-      new: true,
-    });
+    return await this.questionModel.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: { rating: user },
+      },
+      { new: true },
+    );
   }
 
   async downRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndUpdate(id, {
-      $pull: { rating: user },
-      new: true,
-    });
+    return await this.questionModel.findByIdAndUpdate(
+      id,
+      {
+        $pull: { rating: user },
+      },
+      { new: true },
+    );
   }
 
   async updateQuestion(
