@@ -32,6 +32,7 @@ export class AuthService {
       _id: newUser._id,
       email: newUser.email,
       username: newUser.username,
+      avatar: newUser.avatar,
     };
 
     return await this.getAccessToken(payload);
@@ -51,9 +52,10 @@ export class AuthService {
       _id: user._id,
       email: user.email,
       username: user.username,
+      avatar: user.avatar,
     };
 
-    return await this.getAccessToken(payload);
+    return this.getAccessToken(payload);
   }
 
   async hashData(data: string) {

@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude } from 'class-transformer';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { QuestionUser } from 'src/questions/questions.schema';
 import { User } from 'src/user/user.schema';
 
@@ -23,8 +23,10 @@ export class Answer {
   owner: QuestionUser;
   @Prop({ required: true, minlength: 20 })
   answer: string;
-  @Prop({ default: [] })
-  rating: User[];
+  @Prop({ default: [], type: Types.ObjectId, ref: 'User' })
+  likes: string[];
+  @Prop({ default: [], type: Types.ObjectId, ref: 'User' })
+  dislikes: string[];
   @Prop({ default: Date.now() })
   createTimestamp: Date;
   @Prop()

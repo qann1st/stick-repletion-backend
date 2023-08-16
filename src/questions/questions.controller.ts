@@ -52,15 +52,15 @@ export class QuestionsController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Put('/rating/:id')
-  upRating(@CurrentUser() user: User, @Param('id') id: RefType) {
-    return this.questionsService.upRating(user, id);
+  @Put('/rating/up/:id')
+  likeQuestion(@CurrentUser() user: User, @Param('id') id: RefType) {
+    return this.questionsService.likeQuestion(user, id);
   }
 
   @UseGuards(AccessTokenGuard)
-  @Delete('/rating/:id')
-  downRating(@CurrentUser() user: User, @Param('id') id: RefType) {
-    return this.questionsService.downRating(user, id);
+  @Put('/rating/down/:id')
+  dislikeQuestion(@CurrentUser() user: User, @Param('id') id: RefType) {
+    return this.questionsService.dislikeQuestion(user, id);
   }
 
   @UseGuards(AccessTokenGuard)

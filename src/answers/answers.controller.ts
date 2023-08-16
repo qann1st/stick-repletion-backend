@@ -36,12 +36,12 @@ export class AnswersController {
 
   @Put('/rating/:id')
   upRating(@CurrentUser() user: User, @Param('id') id: RefType) {
-    return this.answerService.upRating(user, id);
+    return this.answerService.likeAnswer(user, id);
   }
 
   @Delete('/rating/:id')
   downRating(@CurrentUser() user: User, @Param('id') id: RefType) {
-    return this.answerService.downRating(user, id);
+    return this.answerService.dislikeAnswer(user, id);
   }
 
   @Patch(':id')

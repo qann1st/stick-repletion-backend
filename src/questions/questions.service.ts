@@ -20,10 +20,16 @@ export class QuestionsService {
   async getQuestions(
     page: number,
     limit: number,
-  ): Promise<{ questions: QuestionDocument[]; pages: number }> {
+  ): Promise<{
+    questions: QuestionDocument[];
+    totalCount: number;
+    pages: number;
+  }> {
     const questions = await this.questionModel.find({});
+
     return {
-      questions: questions.slice((page - 1) * limit).reverse(),
+      questions: questions.reverse().slice(limit * (page - 1), limit * page),
+      totalCount: questions.length,
       pages: Math.ceil(questions.length / limit),
     };
   }
@@ -45,14 +51,17 @@ export class QuestionsService {
     });
 
     return {
-      questions: questions.slice((page - 1) * limit).reverse(),
-      users: users.slice((page - 1) * limit).reverse(),
+      questions: questions
+        .reverse()
+        .slice((page - 1) * limit, page * limit + 1),
+      users: users.reverse().slice((page - 1) * limit, page * limit + 1),
       pages: Math.ceil((questions.length + users.length) / limit),
     };
   }
 
   async getQuestionById(id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findById(id);
+    const question = await this.questionModel.findById(id);
+    return question;
   }
 
   async createQuestion(
@@ -61,7 +70,7 @@ export class QuestionsService {
   ): Promise<QuestionDocument> {
     const question = await this.questionModel.create({
       ...createQuestionDto,
-      owner: user,
+      owner: { username: user.username, avatar: user.avatar, _id: user._id },
     });
     await this.userModel.findByIdAndUpdate(user._id, {
       $addToSet: { questions: question },
@@ -69,24 +78,55 @@ export class QuestionsService {
     return question;
   }
 
-  async upRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndUpdate(
+  async likeQuestion(
+    user: User,
+    id: RefType,
+  ): Promise<{ rating: number; likes: string[]; dislikes: string[] }> {
+    const question = await this.questionModel.findById(id);
+    const hasDislike = question.dislikes.find(
+      (el) => el.toString() === user._id.toString(),
+    );
+    const editQuestion = await this.questionModel.findByIdAndUpdate(
       id,
       {
-        $addToSet: { rating: user },
+        [hasDislike ? '$pull' : '$addToSet']: {
+          [hasDislike ? 'dislikes' : 'likes']: user._id,
+        },
       },
       { new: true },
     );
+
+    return {
+      rating: editQuestion.likes.length - editQuestion.dislikes.length,
+      likes: editQuestion.likes,
+      dislikes: editQuestion.dislikes,
+    };
   }
 
-  async downRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.questionModel.findByIdAndUpdate(
+  async dislikeQuestion(
+    user: User,
+    id: RefType,
+  ): Promise<{ rating: number; likes: string[]; dislikes: string[] }> {
+    const question = await this.questionModel.findById(id);
+    const hasLike = question.likes.find(
+      (el) => el.toString() === user._id.toString(),
+    );
+
+    const editQuestion = await this.questionModel.findByIdAndUpdate(
       id,
       {
-        $pull: { rating: user },
+        [hasLike ? '$pull' : '$addToSet']: {
+          [hasLike ? 'likes' : 'dislikes']: user._id,
+        },
       },
       { new: true },
     );
+
+    return {
+      rating: editQuestion.likes.length - editQuestion.dislikes.length,
+      likes: editQuestion.likes,
+      dislikes: editQuestion.dislikes,
+    };
   }
 
   async updateQuestion(
