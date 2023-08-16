@@ -39,18 +39,42 @@ export class AnswerService {
     return answer;
   }
 
-  async upRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.answerModel.findByIdAndUpdate(id, {
-      $addToSet: { rating: user },
-      new: true,
-    });
+  async likeAnswer(user: User, id: RefType): Promise<number> {
+    const answer = await this.answerModel.findById(id);
+    const hasDislike = answer.dislikes.find(
+      (el) => el.toString() === user._id.toString(),
+    );
+
+    const editAnswer = await this.answerModel.findByIdAndUpdate(
+      id,
+      {
+        [hasDislike ? '$pull' : '$addToSet']: {
+          [hasDislike ? 'dislikes' : 'likes']: user._id,
+        },
+      },
+      { new: true },
+    );
+
+    return editAnswer.likes.length - editAnswer.dislikes.length;
   }
 
-  async downRating(user: User, id: RefType): Promise<QuestionDocument> {
-    return await this.answerModel.findByIdAndUpdate(id, {
-      $pull: { rating: user },
-      new: true,
-    });
+  async dislikeAnswer(user: User, id: RefType): Promise<number> {
+    const answer = await this.answerModel.findById(id);
+    const hasLike = answer.likes.find(
+      (el) => el.toString() === user._id.toString(),
+    );
+
+    const editAnswer = await this.answerModel.findByIdAndUpdate(
+      id,
+      {
+        [hasLike ? '$pull' : '$addToSet']: {
+          [hasLike ? 'likes' : 'dislikes']: user._id,
+        },
+      },
+      { new: true },
+    );
+
+    return editAnswer.likes.length - editAnswer.dislikes.length;
   }
 
   async updateAnswer(
